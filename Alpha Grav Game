@@ -1,0 +1,198 @@
+let pressed = false;
+let turn = 1;
+let planet1 = {
+  X: 25,
+  Y: 8,
+  size: 50,
+  bl: 60
+}
+let planet2 = {
+  X: 1,
+  Y: 1,
+  size: 1,
+  bl: 50
+
+}
+var targetDot = 1
+let ship1 = {
+  posX: 1,
+  posY: 1
+}
+
+let ship2 = {
+  posX: 1,
+  posY: 1
+}
+
+
+let targetdot = 50
+let j = 1;
+let rx = 1;
+let ry = 1;
+
+let missle = {
+  ix: 1,
+  iy: 1,
+  incrementx: 1,
+  incrementy: 1,
+  deltax: 1,
+  deltay: 1,
+  ang: 1,
+  power: 1
+}
+
+let distfromplanet = 1
+let distfromplanet2 = 1
+
+function setup() {
+
+  createCanvas(1500, 1000);
+  background(20, 24, 23);
+
+
+  planet1.X = random(300, 500);
+  planet1.Y = random(250, 700);
+  planet1.size = random(80, 200);
+  planet1.bl = random(0, 254);
+  planet2.size = random(80, 300);
+  planet2.X = random(700, 900);
+  planet2.Y = random(300, 700);
+  planet2.bl = random(0, 254)
+  z = 200;
+  j = 200;
+  t = 200;
+}
+
+function draw() {
+
+  noStroke();
+
+  //planets
+  fill(50, planet1.bl, 120);
+  ellipse(planet1.X, planet1.Y, planet1.size);
+  fill(80, 40, planet2.bl);
+  ellipse(planet2.X, planet2.Y, planet2.size);
+
+  //Ships
+  let distfromplanet = (planet1.size / 2) + 20;
+  ship1.posX = planet1.X - distfromplanet;
+  ship1.posY = planet1.Y + distfromplanet;
+  ellipse(ship1.posX, ship1.posY, 30);
+
+  let distfromplanet2 = (planet2.size / 2) + 20;
+  ship2.posX = planet2.X + distfromplanet2;
+  ship2.posY = planet2.Y - distfromplanet2;
+  ellipse(ship2.posX, ship2.posY, 30);
+
+  //missle
+  if (pressed) {
+    z = z + 1;
+
+    let mag = dist(planet1.X, planet1.Y, missle.ix, missle.iy);
+    // t = t + 200* (planet1.size/(mag*mag));
+    //     j = j + 100* (planet1.size/(mag*mag));
+    // missleangchange = planet1.size /( dist (missle.ix, missle.iy, planet1.X, planet1.Y)^2);
+    // missle.ang = missle.ang - missleangchange;
+    //     missle.incrementx = sin(missle.ang) * missle.power;
+    // missle.incrementy = cos(missle.ang) * missle.power;
+    // if (misslestarty<0){
+    //   missle.incrementx = missle.incrementx *-1;
+    //   missle.incrementy = missle.incrementy *-1;
+    // }
+
+    if ((missle.ix - planet1.X) < 0) {
+      rx = -1;
+    } else {
+      rx = 1;
+    }
+    if ((missle.iy - planet1.Y) < 0) {
+      ry = -1;
+    } else {
+      ry = 1;
+    }
+
+    fill(175, 204, 112);
+    rect(missle.ix, missle.iy, 2, 2, 2);
+    missle.ix = missle.ix + missle.incrementx;
+    missle.iy = missle.iy + missle.incrementy;
+    missle.incrementx = missle.incrementx + 0.01 * (mag * 0.01);
+    missle.incrementy = missle.incrementy + 0.01 * (mag * 0.01);
+  }
+
+
+
+
+
+
+  //target console
+  let targetThing = dist(mouseX, mouseY, 1300, 800);
+
+
+  noStroke();
+  fill(255, 255, 255, 255);
+  ellipse(1300, 800, 358, 358);
+  stroke(1)
+  fill(145, 148, 184);
+  ellipse(1300, 800, 350, 350);
+  fill(56, 72, 156);
+  ellipse(1300, 800, 250, 250);
+  fill(47, 94, 189);
+  ellipse(1300, 800, 150, 150);
+  fill(44, 133, 222);
+  ellipse(1300, 800, 50, 50);
+  line(1110, 800, 1490, 800)
+  line(1300, 990, 1300, 610)
+
+  if (targetThing < 175) {
+    line(mouseX, mouseY, 1300, 800);
+    fill(255, 255, 255);
+    ellipse(mouseX, mouseY, 8, 8);
+  }
+}
+
+function mouseClicked() {
+
+  pressed = true
+  turn = turn * (-1);
+
+  if (turn == 1) {
+    missle.ix = ship1.posX;
+    missle.iy = ship1.posY;
+
+    misslestartx = (mouseX - 1300);
+    misslestarty = (mouseY - 800);
+    missletan = misslestartx / misslestarty;
+    missle.ang = Math.atan(missletan);
+    missle.power = dist(mouseX, mouseY, 1300, 800) / 30;
+
+    missle.incrementx = sin(missle.ang) * missle.power;
+    missle.incrementy = cos(missle.ang) * missle.power;
+
+    if (misslestarty < 0) {
+      missle.incrementx = missle.incrementx * -1;
+      missle.incrementy = missle.incrementy * -1;
+    }
+  }
+
+  if (turn == -1) {
+    missle.ix = ship2.posX;
+    missle.iy = ship2.posY;
+
+    misslestartx = (mouseX - 1300);
+    misslestarty = (mouseY - 800);
+    missletan = misslestartx / misslestarty;
+    missle.ang = Math.atan(missletan);
+    missle.power = dist(mouseX, mouseY, 1300, 800) / 30;
+
+    missle.incrementx = sin(missle.ang) * missle.power;
+    missle.incrementy = cos(missle.ang) * missle.power;
+    if (misslestarty < 0) {
+      missle.incrementx = missle.incrementx * -1;
+      missle.incrementy = missle.incrementy * -1;
+    }
+  }
+
+
+
+
+}
